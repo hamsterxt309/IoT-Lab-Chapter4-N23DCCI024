@@ -1,37 +1,45 @@
 import matplotlib
-matplotlib.use('Agg')  # Quan trọng: Dùng cho môi trường không có màn hình (QEMU headless)
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from sensor_sim import SimUltrasonic, SimPotentiometer
 from time import sleep
 
-# Khởi tạo
+
+# ===== KHỞI TẠO =====
 us = SimUltrasonic(echo=24, trigger=23, base_distance=50.0)
-pot = SimPotentiometer(initial_value=0.4) 
-span = pot.value * 100  # Chuyển đổi sang cm (ví dụ 0.4 -> 40cm)
+pot = SimPotentiometer(initial_value=0.4)
+
+span = pot.value * 100  # 0.4 → 40cm
 
 distances = []
+
 print("Bắt đầu thu thập dữ liệu...")
+
 for i in range(50):
     d = us.distance
     distances.append(d)
-    print(f"  Mẫu {i+1}/50: {d:.1f} cm")
+    print(f"Mẫu {i + 1}/50: {d:.1f} cm")
     sleep(0.1)
 
 print(f"\nThu thập xong {len(distances)} mẫu.")
-# Vẽ đồ thị
+
+# ===== VẼ ĐỒ THỊ =====
 fig, ax = plt.subplots(figsize=(10, 5))
 x = range(len(distances))
 
-# Vẽ đường khoảng cách
 ax.plot(x, distances, 'b-', linewidth=1.5, label='Khoảng cách (cm)')
-
-# Vẽ đường ngưỡng Span (nét đứt màu đỏ)
 ax.axhline(y=span, color='r', linestyle='--', linewidth=2, label=f'Span = {span:.0f} cm')
 
-# Tô vùng bên dưới ngưỡng
-ax.fill_between(x, 0, [min(d, span) for d in distances], alpha=0.2, color='red', label='Vùng Span!')
+ax.fill_between(
+    x,
+    0,
+    [min(d, span) for d in distances],
+    alpha=0.2,
+    color='red',
+    label='Vùng Span!'
+)
 
-# Định dạng đồ thị
 ax.set_title('Ultrasonic Sensor Simulation — Span Detection')
 ax.set_xlabel('Sample')
 ax.set_ylabel('Distance (cm)')
@@ -41,4 +49,5 @@ ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.savefig('sensor_chart.png', dpi=150)
-print('Saved: sensor_chart.png')
+
+print("Saved: sensor_chart.png")
