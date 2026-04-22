@@ -29,7 +29,14 @@ fig, ax = plt.subplots(figsize=(10, 5))
 x = range(len(distances))
 
 ax.plot(x, distances, 'b-', linewidth=1.5, label='Khoảng cách (cm)')
-ax.axhline(y=span, color='r', linestyle='--', linewidth=2, label=f'Span = {span:.0f} cm')
+
+ax.axhline(
+    y=span,
+    color='r',
+    linestyle='--',
+    linewidth=2,
+    label=f'Span = {span:.0f} cm'
+)
 
 ax.fill_between(
     x,
